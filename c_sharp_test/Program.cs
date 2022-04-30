@@ -10,8 +10,13 @@ namespace c_sharp_test
     {
         static void Main(string[] args)
         {
-            
-/*            Console.Write("Hello Hello !!\n");*/
+          
+            var math_clr = new clr.math();
+            var serial_clr = new clr.serial(9600, "COM10");
+            math_clr.print_message("Welcom to clr. this message is from c#");
+            math_clr.print_pow(7, 5);
+            Console.Write("------------------\n");
+            serial_clr.write("Hello from C# program\r\n");
         }
     }
 }
