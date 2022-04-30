@@ -4,7 +4,7 @@
 #include <boost/asio/serial_port.hpp>
 #include <boost/asio/serial_port_base.hpp>
 
-namespace managed {
+namespace clr {
 
 	int32_t my_pow(int32_t, int32_t);
 	public ref class math

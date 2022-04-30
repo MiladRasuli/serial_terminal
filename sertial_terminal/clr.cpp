@@ -1,6 +1,6 @@
 #include "clr.h"
 #include <msclr/marshal_cppstd.h>
-namespace managed {
+namespace clr {
 
 	int32_t my_pow(int32_t a, int32_t n)
 	{
