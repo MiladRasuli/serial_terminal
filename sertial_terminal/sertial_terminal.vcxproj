@@ -139,9 +139,11 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="clr.h" />
     <ClInclude Include="native.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="clr.cpp" />
     <ClCompile Include="native.cpp">
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</CompileAsManaged>
       <CompileAsManaged Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</CompileAsManaged>
