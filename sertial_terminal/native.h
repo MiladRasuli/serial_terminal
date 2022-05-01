@@ -23,16 +23,14 @@ namespace native
 
     public:
         using rec_func = void(__stdcall*)(char *,uint32_t);
-        //using rec_func = std::function<void(char* data, uint32_t lenght)>;
-        //using rec_func = std::function<void(std::string)>;
-        serial(boost::asio::io_context& cntx, uint32_t bud, std::string port_name)
+        serial(uint32_t bud, std::string port_name)
         {
-            port = std::make_unique<boost::asio::serial_port>(cntx, port_name);
+            port = std::make_unique<boost::asio::serial_port>(*cntx, port_name);
             port->set_option(boost::asio::serial_port_base::baud_rate(bud));
             port->async_read_some(
                 boost::asio::buffer(ser_buf.data(), ser_buf.size()),
                 std::bind(&serial::resiv_handle, this, std::placeholders::_1, std::placeholders::_2));
-            std::thread([&] {cntx.run(); }).detach();
+            std::thread([&] {cntx->run(); }).detach();
         }
         ~serial()
         {
@@ -52,6 +50,7 @@ namespace native
             receive_ = receive_callback;
         }
     private:
+        std::unique_ptr<boost::asio::io_context> cntx = std::make_unique<boost::asio::io_context>();
         std::unique_ptr<boost::asio::serial_port> port;
         std::array<char, 1000> ser_buf;
         rec_func receive_ = nullptr;

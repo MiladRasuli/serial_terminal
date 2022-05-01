@@ -26,8 +26,9 @@ namespace clr {
 	{
 		msclr::interop::marshal_context str;
 		std::string com = str.marshal_as<std::string>(port_name);
-		cntx = new boost::asio::io_context();
-		ser = new native::serial(*cntx, bud, com);
+		//cntx = new boost::asio::io_context();
+		//ser = new native::serial(*cntx, bud, com);
+		ser = new native::serial(bud, com);
 	}
 	void serial::write(System::String^ message)
 	{

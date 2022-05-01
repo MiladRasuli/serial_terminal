@@ -22,7 +22,7 @@ namespace clr {
 	public ref class serial
 	{
 		native::serial* ser;
-		boost::asio::io_context* cntx;
+		//boost::asio::io_context* cntx;
 		/*this function are called as callback in native side*/
 		void rec_callback(char*, uint32_t);
 		/*this below delegate comes from .net(managed) side*/
