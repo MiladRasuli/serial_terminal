@@ -5,6 +5,7 @@
 #include<boost/asio/serial_port_base.hpp>
 #include<boost/asio/serial_port.hpp>
 #include <thread>
+#include <functional>
 
 namespace native
 {
@@ -21,6 +22,9 @@ namespace native
     class serial {
 
     public:
+        using rec_func = void(__stdcall*)(char *,uint32_t);
+        //using rec_func = std::function<void(char* data, uint32_t lenght)>;
+        //using rec_func = std::function<void(std::string)>;
         serial(boost::asio::io_context& cntx, uint32_t bud, std::string port_name)
         {
             port = std::make_unique<boost::asio::serial_port>(cntx, port_name);
@@ -43,18 +47,23 @@ namespace native
         {
             return ser_buf[index];
         }
+
+        void on_recevie(rec_func receive_callback) {
+            receive_ = receive_callback;
+        }
     private:
         std::unique_ptr<boost::asio::serial_port> port;
         std::array<char, 1000> ser_buf;
-
+        rec_func receive_ = nullptr;
         auto resiv_handle(const boost::system::error_code& err, std::size_t res_size) -> void
         {
-            for (auto ch : ser_buf) {
-                std::cout << ch;
-            }
-            //port->async_read_some(
-            //    boost::asio::buffer(ser_buf.data(), ser_buf.size()),
-            //    std::bind(&serial::resiv_handle, this, std::placeholders::_1, std::placeholders::_2));
+
+            if (receive_ == nullptr) return;
+            receive_(ser_buf.data(), res_size);
+
+            port->async_read_some(
+                boost::asio::buffer(ser_buf.data(), ser_buf.size()),
+                std::bind(&serial::resiv_handle, this, std::placeholders::_1, std::placeholders::_2));
         }
         void send_handle(const boost::system::error_code& error_code, std::size_t bytes_transferred, std::size_t actual_bytes) {
             /* Call the error_callback if an error is generated. */

@@ -7,6 +7,8 @@
 namespace clr {
 
 	int32_t my_pow(int32_t, int32_t);
+	/*managed delegate data type*/
+	public delegate void recive_callback(System::String^, uint32_t);
 	public ref class math
 	{
 		native::math* mth;
@@ -21,9 +23,17 @@ namespace clr {
 	{
 		native::serial* ser;
 		boost::asio::io_context* cntx;
+		/*this function are called as callback in native side*/
+		void rec_callback(char*, uint32_t);
+		/*this below delegate comes from .net(managed) side*/
+		recive_callback^ rec_func{};
+		/*this below delegate is for converting argumants to managed args.*/
+		delegate void proxy_recive_Handeler(char*, uint32_t);
 	public:
 		serial(uint32_t bud, System::String^ port_name);
 		void write(System::String^ message);
+		void on_receive(recive_callback^ f);
+
 		~serial() {};
 	};
 }

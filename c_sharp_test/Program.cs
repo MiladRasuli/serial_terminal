@@ -8,6 +8,12 @@ namespace c_sharp_test
 {
     class Program
     {
+
+        public static void _callback(string msg,UInt32 len)
+        {
+            //string message;
+            Console.WriteLine(msg.Substring(0, (int)len));
+        }
         static void Main(string[] args)
         {
           
@@ -17,6 +23,9 @@ namespace c_sharp_test
             math_clr.print_pow(7, 5);
             Console.Write("------------------\n");
             serial_clr.write("Hello from C# program\r\n");
+            /*_callback("salam", 2);*/
+            serial_clr.on_receive(_callback) ;
+            Console.Read();
         }
     }
 }

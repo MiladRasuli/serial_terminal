@@ -16,6 +16,12 @@ namespace clr {
 		mth->print_message(str.marshal_as<std::string>(message));
 		System::Console::Write("Hello World from C++/CLR\n");
 	}
+	void serial::rec_callback(char* msg, uint32_t len)
+	{
+		System::String^ msg_str = gcnew System::String(msg);
+		if (rec_func)
+			rec_func(msg_str, len);
+	}
 	serial::serial(uint32_t bud, System::String^ port_name)
 	{
 		msclr::interop::marshal_context str;
@@ -28,6 +34,16 @@ namespace clr {
 		msclr::interop::marshal_context str;
 		std::string msg = str.marshal_as<std::string>(message);
 		ser->write(msg);
+	}
+	void serial::on_receive(recive_callback^ f)
+	{
+		rec_func = f;
+		auto handler = gcnew proxy_recive_Handeler(this, &serial::rec_callback);
+		System::Runtime::InteropServices::GCHandle::Alloc(handler);
+		auto ip = System::Runtime::InteropServices::Marshal::GetFunctionPointerForDelegate(handler);
+
+		ser->on_recevie(static_cast<native::serial::rec_func>(ip.ToPointer()));
+
 	}
 }
 
